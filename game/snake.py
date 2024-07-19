@@ -59,19 +59,20 @@ class Snake():
         if self.direction == "up":
             self.y[0] -= BLOCK_WIDTH
 
-        if self.x[0] > SCREEN_SIZE:
+        if self.x[0] >= SCREEN_SIZE:
             self.x[0] = 0
 
         if self.x[0] < 0:
             self.x[0] = SCREEN_SIZE
 
-        if self.y[0] > SCREEN_SIZE:
+        if self.y[0] >= SCREEN_SIZE:
             self.y[0] = 0
 
         if self.y[0] < 0:
             self.y[0] = SCREEN_SIZE
 
         self.draw()
+        # print(str(self.x) + " " + str(self.y))
 
 
 class Apple:
