@@ -21,7 +21,7 @@ class Snake():
         self.parent_screen.fill((58, 59, 36))
         for i in range(self.length):
             self.parent_screen.blit(self.block, (self.x[i], self.y[i]))
-        pygame.display.flip()
+        # pygame.display.update()
 
     def increase(self):
         self.length += 1
@@ -93,6 +93,8 @@ class Game():
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Snake Game - Sumit")
+        self.SCREEN_UPDATE = pygame.USEREVENT
+        pygame.time.set_timer(self.SCREEN_UPDATE, 150)
         self.surface = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
         self.surface.fill((58, 59, 36))
         self.snake = Snake(self.surface, 5)
@@ -128,8 +130,8 @@ class Game():
         self.snake.move()
         self.apple.draw()
         self.display_score()
-        pygame.display.flip()
-        time.sleep(0.2)
+
+        # time.sleep(0.15)
 
         if self.eat(self.snake.x[0], self.snake.y[0], self.apple.x, self.apple.y):
             self.snake.increase()
@@ -149,16 +151,17 @@ class Game():
     def reset(self):
         self.snake = Snake(self.surface)
         self.apple = Apple(self.surface)
+        self.score = 0
 
     def show_game_over(self):
         self.render_background()
         font = pygame.font.SysFont('arial', 30)
-        line1 = font.render(f"Game is over! Your score is {self.score}", True, (255, 255, 255))
+        line1 = font.render(f"Game over! score is {self.score}", True, (255, 255, 255))
         self.surface.blit(line1, (200, 300))
-        line2 = font.render("To play again press Enter. To exit press Escape!", True, (255, 255, 255))
+        line2 = font.render("To play again:  press Enter. To exit:  press Escape!", True, (255, 255, 255))
         self.surface.blit(line2, (200, 350))
         pygame.mixer.music.pause()
-        pygame.display.flip()
+        pygame.display.update()
 
     def run(self):
         running = True
@@ -185,15 +188,28 @@ class Game():
 
                 elif event.type == QUIT:
                     running = False
+                elif event.type == self.SCREEN_UPDATE:
+                    try:
+                        if not pause:
+                            self.play()
+                            pygame.display.update()
 
-            try:
-                if not pause:
-                    self.play()
+                    except Exception as e:
+                        self.show_game_over()
+                        pause = True
+                        self.reset()
 
-            except Exception as e:
-                self.show_game_over()
-                pause = True
-                self.reset()
+
+                    pygame.time.Clock().tick(60)
+
+            # try:
+            #     if not pause:
+            #         self.play()
+            #
+            # except Exception as e:
+            #     self.show_game_over()
+            #     pause = True
+            #     self.reset()
 
 
 game = Game()
